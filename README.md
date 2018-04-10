@@ -1,4 +1,6 @@
-# graphql-ruby
+# GraphQL-Ruby Tutorial
+
+This is a modified version of https://github.com/howtographql/graphql-ruby that works together with https://github.com/unimal-jp/graphql-react-apollo-sample.
 
 ## Installation
 
@@ -15,13 +17,13 @@ rails db:seed
 Starting the server:
 
 ```
-rails server
+rails server -p 4000
 ```
 
 Opening the application:
 
 ```
-open http://localhost:3000/
+open http://localhost:4000/
 ```
 
 ## Interesting Files:
@@ -46,7 +48,7 @@ List first 10 links, containing "example":
 
 ```graphql
 {
-  allLinks(first: 10, filter: {description_contains: "example"}) {
+  feed(first: 10, filter: {description_contains: "example"}) {
     id
     url
     description
@@ -64,10 +66,11 @@ Creates new user:
 
 ```graphql
 mutation {
-  createUser(
+  signup(
     name: "Radoslav Stankov",
-    authProvider: {
-      email: { email: "rado@example.com", password: "123456" }
+    credentials: {
+      email: "rado@example.com",
+      password: "123456"
     }
   ) {
     id
@@ -81,7 +84,7 @@ Creates new user token:
 
 ```graphql
 mutation {
-  signinUser(email: {email: "rado@example.com", password: "123456"}) {
+  login(email: {email: "rado@example.com", password: "123456"}) {
     token
     user {
       id
@@ -96,7 +99,7 @@ Creates new link:
 
 ```graphql
 mutation {
-  createLink(url:"http://example.com", description:"Example") {
+  post(url:"http://example.com", description:"Example") {
     id
     url
     description
@@ -112,7 +115,7 @@ Creates new vote:
 
 ```graphql
 mutation {
-  createVote(linkId:"TGluay0yMQ==") {
+  vote(linkId:"TGluay0yMQ==") {
     user {
       id
       name
@@ -125,4 +128,3 @@ mutation {
   }
 }
 ```
-
