@@ -22,9 +22,11 @@ class GraphqlController < ApplicationController
   end
 
   def context
+    token = session[:token] || request.env['HTTP_AUTHORIZATION']&.split&.last
+
     {
       session: session,
-      current_user: AuthToken.user_from_token(session[:token])
+      current_user: AuthToken.user_from_token(token)
     }
   end
 
