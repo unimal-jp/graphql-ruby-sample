@@ -1,5 +1,5 @@
 class Resolvers::SignInUser < GraphQL::Function
-  argument :email, Types::AuthProviderEmailInput
+  argument :credentials, Types::AuthProviderEmailInput
 
   type do
     name 'SigninPayload'
@@ -9,7 +9,7 @@ class Resolvers::SignInUser < GraphQL::Function
   end
 
   def call(_obj, args, ctx)
-    input = args[:email]
+    input = args[:credentials]
 
     return unless input
 
@@ -22,6 +22,9 @@ class Resolvers::SignInUser < GraphQL::Function
 
     ctx[:session][:token] = token
 
-    OpenStruct.new(user: user, token: token)
+    OpenStruct.new(
+      user: user,
+      token: token
+    )
   end
 end

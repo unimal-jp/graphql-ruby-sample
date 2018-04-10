@@ -2,19 +2,33 @@ class Resolvers::CreateUser < GraphQL::Function
   AuthProviderInput = GraphQL::InputObjectType.define do
     name 'AuthProviderSignupData'
 
-    argument :email, Types::AuthProviderEmailInput
+    argument :credentials, Types::AuthProviderEmailInput
   end
 
   argument :name, !types.String
-  argument :authProvider, AuthProviderInput
+  argument :credentials, Types::AuthProviderEmailInput
 
-  type Types::UserType
+  type do
+    name 'SignupPayload'
 
-  def call(_obj, args, _ctx)
-    User.create!(
+    field :token, types.String
+    field :user, Types::UserType
+  end
+
+  def call(_obj, args, ctx)
+    user = User.create!(
       name: args[:name],
-      email: args.dig(:authProvider, :email, :email),
-      password: args.dig(:authProvider, :email, :password)
+      email: args[:credentials][:email],
+      password: args[:credentials][:password]
+    )
+
+    token = AuthToken.token_for_user(user)
+
+    ctx[:session][:token] = token
+
+    OpenStruct.new(
+      user: user,
+      token: token
     )
   rescue ActiveRecord::RecordInvalid => e
     GraphQL::ExecutionError.new("Invalid input: #{e.record.errors.full_messages.join(', ')}")
