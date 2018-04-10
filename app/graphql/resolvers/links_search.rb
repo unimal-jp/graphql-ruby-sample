@@ -17,7 +17,7 @@ class Resolvers::LinksSearch
   end
 
   OrderEnum = GraphQL::EnumType.define do
-    name 'LinkOrderBy'
+    name 'LinkOrderByInput'
 
     value 'createdAt_ASC'
     value 'createdAt_DESC'
